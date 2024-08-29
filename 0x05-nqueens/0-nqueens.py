@@ -6,29 +6,30 @@ def print_usage_and_exit(message):
     print(message)
     sys.exit(1)
 
-def is_safe(board, row, col):
-    """Checks if it's safe to place a queen at board[row][col]."""
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    for i, j in zip(range(row, len(board), 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    return True
+def solve_nqueens(N):
+    """Uses backtracking to solve the N Queens problem and print solutions."""
+    solutions = []
+    queens = [-1] * N  # Positions of queens on each row (-1 indicates no queen)
+    cols = [False] * N  # Track columns that are under attack
+    diag1 = [False] * (2 * N - 1)  # Track left diagonals (/)
+    diag2 = [False] * (2 * N - 1)  # Track right diagonals (\)
 
-def solve_nqueens(board, col, solutions):
-    """Recursively attempts to place queens on the board."""
-    if col == len(board):
-        solutions.append([[i, board[i].index(1)] for i in range(len(board))])
-        return
-    for row in range(len(board)):
-        if is_safe(board, row, col):
-            board[row][col] = 1
-            solve_nqueens(board, col + 1, solutions)
-            board[row][col] = 0
+    def backtrack(row):
+        if row == N:
+            solutions.append([[i, queens[i]] for i in range(N)])
+            return
+        for col in range(N):
+            if not cols[col] and not diag1[row - col + N - 1] and not diag2[row + col]:
+                # Place the queen
+                queens[row] = col
+                cols[col] = diag1[row - col + N - 1] = diag2[row + col] = True
+                backtrack(row + 1)
+                # Remove the queen
+                queens[row] = -1
+                cols[col] = diag1[row - col + N - 1] = diag2[row + col] = False
+
+    backtrack(0)
+    return solutions
 
 def main():
     """Main function to handle input and solve the N Queens problem."""
@@ -43,9 +44,7 @@ def main():
     if N < 4:
         print_usage_and_exit("N must be at least 4")
 
-    board = [[0 for _ in range(N)] for _ in range(N)]
-    solutions = []
-    solve_nqueens(board, 0, solutions)
+    solutions = solve_nqueens(N)
     
     for solution in solutions:
         print(solution)
