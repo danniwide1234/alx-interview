@@ -6,7 +6,7 @@ const requestOptions = {
   method: 'GET'
 };
 
-request(requestOptions, function (err, _, data) {
+request(requestOptions, function (err, res, data) {
   if (!err) {
     const characterUrls = JSON.parse(data).characters;
     displayCharacterNames(characterUrls, 0);
@@ -14,7 +14,7 @@ request(requestOptions, function (err, _, data) {
 });
 
 function displayCharacterNames (urls, idx) {
-  request(urls[idx], function (err, _, data) {
+  request(urls[idx], function (err, res, data) {
     if (!err) {
       console.log(JSON.parse(data).name);
       if (idx + 1 < urls.length) {
