@@ -1,38 +1,23 @@
 #!/usr/bin/python3
-""" A function that determines the fewest number of coins
-needed to meet a given amount total
+"""A function to determine the fewest number of coins needed
+   to meet a given amount total
 """
 
-def fewestCoins(denominations, amount):
-    """Determines the fewest number of coins to make the total amount
-    Args:
-        denominations (list[int]) : list of different coin values
-        amount (int): The target amount
-
-    Return:
-        coin_count (int): the fewest number of coins
+def makeChange(coins, total):
+    """This function will take a list of coins and use
+       that to calculate how much change the total will require
     """
-
-    if amount < 1:
+    if total <= 0:
         return 0
 
-    coin_count = -1
-
-    if len(denominations):
-        denominations = sorted(denominations, reverse=True)
-        num_of_denominations = len(denominations)
+    else:
+        sorted_coins = sorted(coins)
+        sorted_coins.reverse()
         coin_count = 0
-
-        for i in range(num_of_denominations):
-            while amount:
-                # if total >= 1:
-                if amount - denominations[i] >= 0:
-                    coin_count += 1
-                    amount -= denominations[i]
-                else:
-                    break
-
-        if amount != 0:
-            coin_count = -1
-
-    return coin_count
+        for coin in sorted_coins:
+            while(total >= coin):
+                coin_count += 1
+                total -= coin
+        if total == 0:
+            return coin_count
+        return -1
